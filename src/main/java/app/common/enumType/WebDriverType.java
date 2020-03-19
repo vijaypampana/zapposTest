@@ -11,4 +11,8 @@ public enum WebDriverType {
     WebDriverType(String sUrl) {
         this.sUrl = sUrl;
     }
+
+    public String getsUrl() {
+        return sUrl;
+    }
 }

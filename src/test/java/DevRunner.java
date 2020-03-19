@@ -15,6 +15,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class DevRunner {
 
@@ -30,6 +31,7 @@ public class DevRunner {
             WebDriverManager.chromedriver().setup();
             //System.setProperty("webdriver.chrome.driver", "src/test/resources/driver/chromedriver.exe");
             oDriver = new ChromeDriver(getChromeOption());
+            oDriver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
             oDriver.get("https://www.zappos.com");
             oWebDriverImplicitWait = new WebDriverWait(oDriver, 10);
             oWebDriverWait = new WebDriverWait(oDriver, 15);
@@ -43,7 +45,8 @@ public class DevRunner {
             oDriver.findElement(By.id("searchAll")).sendKeys(Keys.ENTER);
             oWebDriverWait.until(ExpectedConditions.visibilityOf(oDriver.findElement(By.id("feedback"))));
             oDriver.findElement(By.xpath("//*[text()=\"Men's Size\"]")).click();
-            oDriver.findElement(By.xpath("//section[@class='SR TR kS']//*[@aria-hidden='selected']//*[text()=10]")).click();
+            Thread.sleep(3000);
+            oDriver.findElement(By.xpath("(//*[@aria-hidden='selected']//span[text()=10])[4]")).click();
             //js.executeScript("arguments[0].scrollIntoView()", oDriver.findElement(By.xpath("//section[@class='SR TR kS']")));
             Thread.sleep(3000);
             List<WebElement> oElements = oDriver.findElements(By.xpath("(//div[@role='group'])[6]//span"));
@@ -55,7 +58,8 @@ public class DevRunner {
                 }
             });
             js.executeScript("window.scrollTo(document.body.scrollHeight, 0)");
-            oDriver.findElement(By.xpath("//div[@class='TQ']//article")).click();
+            Thread.sleep(3000);
+            (oDriver.findElements(By.xpath("//div[@class='ch Of']"))).get(0).click();
             oWebDriverImplicitWait.until(d -> ((JavascriptExecutor) d).executeScript("return (document.readyState === 'complete' || document.readyState === 'interactive')"));
             Thread.sleep(5000);
             oWebDriverWait.until(ExpectedConditions.visibilityOf(oDriver.findElement(By.xpath("//span[text()='Air Zoom Pegasus 36']"))));
@@ -70,9 +74,9 @@ public class DevRunner {
             oDriver.findElement(By.id("ap_password")).sendKeys("test12");
             oDriver.findElement(By.id("signInSubmit")).click();
             Thread.sleep(3000);
-            Assert.assertEquals(oDriver.findElement(By.xpath("((//*[@class=\"VK\"]/div)[2]//div)[4]")).getText(), "Color: Black/White/Thunder Grey");
-            Assert.assertEquals(oDriver.findElement(By.xpath("((//*[@class=\"VK\"]/div)[2]//div)[5]")).getText(), "Size: 10");
-            Assert.assertEquals(oDriver.findElement(By.xpath("((//*[@class=\"VK\"]/div)[2]//div)[6]")).getText(), "Width: EE - Wide");
+            Assert.assertEquals(oDriver.findElement(By.xpath("//*[text()='Air Zoom Pegasus 36']/following-sibling::div")).getText(), "Color: Black/White/Thunder Grey");
+            Assert.assertEquals(oDriver.findElement(By.xpath("//*[text()='Air Zoom Pegasus 36']/following-sibling::div/following-sibling::div")).getText(), "Size: 10");
+            Assert.assertEquals(oDriver.findElement(By.xpath("//*[text()='Air Zoom Pegasus 36']/following-sibling::div/following-sibling::div/following-sibling::div")).getText(), "Width: EE - Wide");
             System.out.println("test");
         }
         catch (Exception e) {

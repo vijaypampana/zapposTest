@@ -1,15 +1,30 @@
 package app.common;
 
 import app.common.enumType.BrowserType;
+import app.common.enumType.WebDriverType;
+import io.github.bonigarcia.wdm.WebDriverManager;
+import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.ie.InternetExplorerOptions;
+import org.openqa.selenium.opera.OperaDriver;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.safari.SafariDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class Context {
 
@@ -147,11 +162,102 @@ public class Context {
         return oCapabilities;
     }
 
+    public void setDriver(WebDriverType oWebDriverType, BrowserType oBrowserType, String sDeviceName) {
+        switch (oWebDriverType) {
+            case ZALENIUM:
+                startRemoteDriver(oBrowserType, sDeviceName);
+                break;
+            case SELENIUMLOCAL:
+                startLocalDriver(oBrowserType, sDeviceName);
+                break;
+        }
+    }
+
+    //This method will create a local browser Driver
     public void startLocalDriver(BrowserType oBrowserType, String sDeviceName) {
+        switch (oBrowserType) {
+            case CHROME:
+                WebDriverManager.chromedriver().setup();
+                oWebDriver = new ChromeDriver(getChromeOptions(sDeviceName));
+                break;
+            case FIREFOX:
+                WebDriverManager.firefoxdriver().setup();
+                oWebDriver = new FirefoxDriver(getFirefoxOptions(sDeviceName));
+                break;
+            case IE:
+                WebDriverManager.iedriver().setup();
+                oWebDriver = new InternetExplorerDriver(getInternetExplorerOptions());
+                break;
+            case SAFARI:
+                oWebDriver = new SafariDriver();
+                break;
+            case OPERA:
+                WebDriverManager.operadriver().setup();
+                oWebDriver = new OperaDriver();
+                break;
+            case EDGE:
+                WebDriverManager.edgedriver().setup();
+                oWebDriver = new EdgeDriver();
+                break;
+        }
+        oWebDriver.manage().window().maximize();
+    }
+
+    public void startRemoteDriver(BrowserType oBrowserType, String sDeviceName) {
 
     }
 
+    //This method will close the webDriver
+    public void closeDriver() {
+        if(oWebDriver != null) {
+            oWebDriver.quit();
+        }
+    }
 
+    //This method will turn on Implicit Wait
+    public void turnOnImplicitWait() {
+        oWebDriver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+    }
+
+    //This method will turn off Implicit Wait
+    public void turnOffImplicitWait() {
+        oWebDriver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
+    }
+
+    //This method will give the chromeOptions
+    public ChromeOptions getChromeOptions(String sDeviceName) {
+        ChromeOptions options = new ChromeOptions();
+        if(StringUtils.isEmpty(sDeviceName)) {
+            options.addArguments("disable-extensions");
+            options.addArguments("--start-maximized");
+            options.addArguments("disable-infobars");
+            options.setExperimentalOption("useAutomationExtension", false);
+            options.setCapability(CapabilityType.ACCEPT_INSECURE_CERTS, true);
+            options.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
+        } else {
+            Map<String, String> mobileEmulation = new HashMap<>();
+            mobileEmulation.put("deviceName", sDeviceName);
+            options.setExperimentalOption("mobileEmulation", mobileEmulation);
+        }
+        return options;
+    }
+
+    //This method will give you FireFoxOptions
+    public FirefoxOptions getFirefoxOptions(String sDeviceName) {
+        FirefoxProfile profile = new FirefoxProfile();
+        profile.setPreference("network.automatic-ntlm-auth.trusted-uris", ".cigna.com,.cignaglobal.com");
+        oCapabilities.setCapability(FirefoxDriver.PROFILE, profile);
+        oCapabilities.setCapability("acceptInsecureCerts", true);
+        oCapabilities.setCapability("moz:webdriverClick", false);
+        return new FirefoxOptions(oCapabilities);
+    }
+
+    //This method will give you IE Options
+    public InternetExplorerOptions getInternetExplorerOptions() {
+        InternetExplorerOptions options = new InternetExplorerOptions();
+        options.destructivelyEnsureCleanSession();
+        return options;
+    }
 
 
 }
