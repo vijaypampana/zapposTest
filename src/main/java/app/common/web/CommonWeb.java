@@ -8,6 +8,11 @@ import org.openqa.selenium.WebElement;
 
 public class CommonWeb {
 
+    @Given("I start the application")
+    public void startApplication() {
+
+    }
+
     @Given("^I click on \"(.*)\"$")
     public void clickOn(@Transform(TransformToWebElement.class) WebElement element) {
         element.click();

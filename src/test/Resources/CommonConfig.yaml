@@ -1,0 +1,19 @@
+#WebDriver Information
+webDriverType: 'SELENIUMLOCAL' #APPIUM, ZALENIUM, SELENIUMLOCAL
+webDriverTimeOut: 30
+webDriverAuthentication:
+  username: ''
+  password: ''
+
+#Application Under Test
+applicationType: ''
+applicationEnvironment: ''
+
+#DesiredCapabilities
+capability:
+  automationName: ''
+  browserName: '' #CHROME, FIREFOX, SAFARI, EDGE, OPERA, IE, ANDROID, IOS
+  app: ''
+  deviceName: ''
+  platformName: ''
+  platformVersion: ''

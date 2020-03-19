@@ -44,7 +44,7 @@ public class DevRunner {
             Thread.sleep(3000);
             oDriver.findElement(By.id("searchAll")).sendKeys(Keys.ENTER);
             oWebDriverWait.until(ExpectedConditions.visibilityOf(oDriver.findElement(By.id("feedback"))));
-            oDriver.findElement(By.xpath("//*[text()=\"Men's Size\"]")).click();
+            oDriver.findElement(By.xpath("//*[text()='Men's Size']")).click();
             Thread.sleep(3000);
             oDriver.findElement(By.xpath("(//*[@aria-hidden='selected']//span[text()=10])[4]")).click();
             //js.executeScript("arguments[0].scrollIntoView()", oDriver.findElement(By.xpath("//section[@class='SR TR kS']")));
@@ -68,13 +68,17 @@ public class DevRunner {
             (new Select(oDriver.findElement(By.id("pdp-width-select")))).selectByVisibleText("EE - Wide");
             oDriver.findElement(By.xpath("//button[text()='Add to Cart']")).click();
             Thread.sleep(5000);
-            oDriver.findElement(By.xpath("//button[text()='Proceed to Checkout']")).click();
+            try {
+                oDriver.findElement(By.xpath("//button[text()='Proceed to Checkout']")).click();
+            } catch (Exception ignored) {
+
+            }
             Thread.sleep(3000);
             oDriver.findElement(By.id("ap_email")).sendKeys("vijaypampana@gmail.com");
             oDriver.findElement(By.id("ap_password")).sendKeys("test12");
             oDriver.findElement(By.id("signInSubmit")).click();
             Thread.sleep(3000);
-            Assert.assertEquals(oDriver.findElement(By.xpath("//*[text()='Air Zoom Pegasus 36']/following-sibling::div")).getText(), "Color: Black/White/Thunder Grey");
+            Assert.assertEquals(oDriver.findElement(By.xpath("//*[text()='Air Zoom Pegasus 36']/following-sibling::div")).getText(), "Color: Blck/White/Thunder Grey");
             Assert.assertEquals(oDriver.findElement(By.xpath("//*[text()='Air Zoom Pegasus 36']/following-sibling::div/following-sibling::div")).getText(), "Size: 10");
             Assert.assertEquals(oDriver.findElement(By.xpath("//*[text()='Air Zoom Pegasus 36']/following-sibling::div/following-sibling::div/following-sibling::div")).getText(), "Width: EE - Wide");
             System.out.println("test");
