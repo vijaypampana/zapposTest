@@ -24,7 +24,7 @@ public class DevRunner {
     private WebDriverWait oWebDriverWait;
     private WebDriverWait oWebDriverImplicitWait;
 
-    @Test(enabled = false)
+    @Test(enabled = true)
     public void startTest() throws InterruptedException {
         try {
             WebDriverManager.chromedriver().setup();
@@ -45,9 +45,10 @@ public class DevRunner {
             oDriver.findElement(By.xpath("//*[text()=\"Men's Size\"]")).click();
             oDriver.findElement(By.xpath("//section[@class='SR TR kS']//*[@aria-hidden='selected']//*[text()=10]")).click();
             //js.executeScript("arguments[0].scrollIntoView()", oDriver.findElement(By.xpath("//section[@class='SR TR kS']")));
+            Thread.sleep(3000);
             List<WebElement> oElements = oDriver.findElements(By.xpath("(//div[@role='group'])[6]//span"));
             js.executeScript("arguments[0].scrollIntoView()", oElements.get(0));
-            Thread.sleep(2000);
+
             oElements.forEach(ele -> {
                 if (ele.getText().equalsIgnoreCase("Black") || ele.getText().equalsIgnoreCase("White") || ele.getText().equalsIgnoreCase("Gray")) {
                     ele.click();
