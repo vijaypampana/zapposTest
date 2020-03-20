@@ -2,7 +2,13 @@ package app.common;
 
 import app.common.enumType.BrowserType;
 import app.common.enumType.WebDriverType;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import io.github.bonigarcia.wdm.WebDriverManager;
+import io.restassured.mapper.ObjectMapperDeserializationContext;
+import io.restassured.mapper.ObjectMapperSerializationContext;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -22,6 +28,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -34,7 +41,7 @@ public class Context {
 
     private Map<String, Object> oPageInstance = new HashMap<>();
 
-    private CommonConfig oConfig = new CommonConfig();
+    private CommonConfig oConfig;
 
     private WebDriver oWebDriver;
     private WebDriverWait oWebDriverWait;
@@ -81,7 +88,7 @@ public class Context {
         String sSeperator = ".";
         if(!oPageInstance.containsKey(sPage)) {
             try {
-                oPageInstance.put(sPage, Class.forName(BASE_PACKAGE + sSeperator + oConfig.applicationType + sSeperator + processPage(sPage)).getDeclaredConstructor().newInstance());
+                oPageInstance.put(sPage, Class.forName(BASE_PACKAGE + sSeperator + oConfig.getApplicationType() + sSeperator + processPage(sPage)).getDeclaredConstructor().newInstance());
             } catch (Exception e) {
                 logger.error(e.getMessage());
             }
@@ -148,6 +155,9 @@ public class Context {
 
     public CommonConfig getoConfig() {
         return oConfig;
+    }
+    public void setoConfig(CommonConfig oConfig) {
+        this.oConfig = oConfig;
     }
 
     public WebDriver getoWebDriver() {
@@ -259,5 +269,17 @@ public class Context {
         return options;
     }
 
+    public void loadConfig() {
+        logger.info("Started Reading CommonConfig.yaml");
 
+        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+
+        try {
+            oConfig = mapper.readValue(new File(getClass().getClassLoader().getResource("CommonConfig.yaml").getFile()),CommonConfig.class);
+        } catch (Exception e) {
+            logger.error("Encounter Error while reading the common Config file");
+        }
+    }
 }

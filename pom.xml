@@ -13,6 +13,7 @@
         <cucumber.version>2.4.0</cucumber.version>
         <rest.assured.version>4.2.0</rest.assured.version>
         <selenium.version>3.141.59</selenium.version>
+        <jackson.version>2.10.3</jackson.version>
     </properties>
 
     <dependencies>
@@ -46,6 +47,19 @@
             <artifactId>selenium-java</artifactId>
             <version>${selenium.version}</version>
         </dependency>
+
+        <!-- Jackson Libraries -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-yaml</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>
