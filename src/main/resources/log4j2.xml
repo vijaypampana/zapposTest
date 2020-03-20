@@ -1,19 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="DEBUG">
+<Configuration status="WARN">
+    <Properties>
+        <Property name="basePath">logs</Property>
+    </Properties>
     <Appenders>
-        <File name="LogToFile" fileName="logs/log4j-application.log">
+        <!-- Define the appender here, I have created two appenders one for console one for File -->
+        <Console name="LogToConsole" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+<!--        <File name="LogToFile" fileName="logs/log4j-application.log">-->
+<!--            <PatternLayout>-->
+<!--                <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>-->
+<!--            </PatternLayout>-->
+<!--        </File>-->
+        <RollingFile name="LogToRollingFile" fileName="${basePath}/app.log" filePattern="${basePath}/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log" ignoreException="false">
             <PatternLayout>
-                <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
+                <Pattern>[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n</Pattern>
             </PatternLayout>
-        </File>
+            <Policies>
+                <OnStartupTriggeringPolicy />
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+                <SizeBasedTriggeringPolicy size="1 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+        <!-- Currently Google is blocking all non secure email but it should work to send email when something fails -->
+        <SMTP name="LogToMail" subject="Error Log From Log4j"
+              from="log4j@Gmail.com"
+              to="vijaypampana@gmail.com"
+              smtpHost="smtp.gmail.com"
+              smtpPort="465"
+              smtpUsername="vijaypampana@gmail.com"
+              smtpPassword="testtest"
+              smtpProtocol="smtps"
+              smtpDebug="true"
+              ignoreExceptions="false"
+              bufferSize="100">
+        </SMTP>
     </Appenders>
     <Loggers>
         <!-- avoid duplicated logs with additivity=false -->
+        <!-- The same information will be logged to Console as well as console -->
         <Logger name="app" level="debug" additivity="false">
-            <AppenderRef ref="LogToFile"/>
+            <AppenderRef ref="LogToRollingFile"/>
         </Logger>
         <Root level="error">
-            <AppenderRef ref="LogToFile"/>
+            <AppenderRef ref="LogToConsole"/>
+<!--            <AppenderRef ref="LogToMail"/>-->
         </Root>
     </Loggers>
 </Configuration>
