@@ -282,6 +282,7 @@ public class Context {
     //This method will give you IE Options
     public InternetExplorerOptions getInternetExplorerOptions() {
         InternetExplorerOptions options = new InternetExplorerOptions();
+        options.ignoreZoomSettings();
         options.destructivelyEnsureCleanSession();
         return options;
     }
