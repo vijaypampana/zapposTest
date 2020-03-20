@@ -13,7 +13,7 @@ applicationEnvironment: ''
 capability:
   perfectoSessionID: ''
   automationName: ''
-  browserName: 'CHROME' #CHROME, FIREFOX, SAFARI, EDGE, OPERA, IE, ANDROID, IOS
+  browserName: 'FIREFOX' #CHROME, FIREFOX, SAFARI, EDGE, OPERA, IE, ANDROID, IOS
   app: ''
   deviceName: ''
   platformName: ''
