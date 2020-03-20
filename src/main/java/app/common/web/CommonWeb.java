@@ -5,7 +5,10 @@ import app.common.Context;
 import app.common.Transform.TransformToWebElement;
 import cucumber.api.Transform;
 import cucumber.api.java.en.Given;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 public class CommonWeb {
 
@@ -37,6 +40,17 @@ public class CommonWeb {
     @Given("^I get the webpage \"(.*)\"$")
     public void getWebPage(String sUrl) {
         context.getoWebDriver().get(sUrl);
+    }
+
+    @Given("^I wait for \"(.*)\" page to load$")
+    public void locateWaitElement(String sScreen) {
+        context.setsCurrentPage(sScreen.replaceAll(" ", ""));
+        try {
+            context.getoWebDriverWait().until(ExpectedConditions.visibilityOf(context.findElement("waitElement")));
+        } catch (StaleElementReferenceException e) {
+            PageFactory.initElements(context.getoWebDriver(), context.getPageInstance(context.getsCurrentPage()));
+            locateWaitElement(sScreen);
+        }
     }
 
     private Context context;

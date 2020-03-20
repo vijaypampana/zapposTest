@@ -6,7 +6,7 @@ import app.common.enumType.WebDriverType;
 public class CommonConfig {
 
     private WebDriverType webDriverType;
-    private Integer webDriverTimeout;
+    private Integer webDriverTimeOut;
     private WebDriverAuthentication webDriverAuthentication;
     private String applicationType;
     private String applicationEnvironment;
@@ -20,12 +20,12 @@ public class CommonConfig {
         this.webDriverType = webDriverType;
     }
 
-    public Integer getWebDriverTimeout() {
-        return webDriverTimeout;
+    public Integer getWebDriverTimeOut() {
+        return webDriverTimeOut;
     }
 
-    public void setWebDriverTimeout(Integer webDriverTimeout) {
-        this.webDriverTimeout = webDriverTimeout;
+    public void setWebDriverTimeOut(Integer webDriverTimeOut) {
+        this.webDriverTimeOut = webDriverTimeOut;
     }
 
     public WebDriverAuthentication getWebDriverAuthentication() {

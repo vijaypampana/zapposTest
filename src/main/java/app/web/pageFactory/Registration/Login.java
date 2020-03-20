@@ -1,4 +1,4 @@
-package app.web.login;
+package app.web.pageFactory.Registration;
 
 import app.common.Context;
 import cucumber.api.java.en.Given;

@@ -6,7 +6,7 @@ webDriverAuthentication:
   password: ''
 
 #Application Under Test
-applicationType: ''
+applicationType: 'web'  # web, mobile, API
 applicationEnvironment: ''
 
 #DesiredCapabilities

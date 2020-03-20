@@ -100,33 +100,33 @@ public class Context {
 
     //This method will actually removes any spaces and converts the string to lower case so that it matches the method names
     private String processPage(String sPage) {
-        sReturn = ".pageFactory";
+        sReturn = "pageFactory";
         List<String> aPage = Arrays.asList(sPage.split("\\."));
-        aPage.forEach(val -> sReturn += "." + val.toLowerCase().replaceAll(" ", ""));
+        aPage.forEach(val -> sReturn += "." + val.replaceAll(" ", ""));
         return sReturn;
     }
 
     //This webElement will search for sObject in the list of fields defined in the current or parent class
     public WebElement searchElement(Object oPage, String sObject) {
         element = null;
+        if(!isAPI()) {
+            Class<?> aClass = oPage.getClass();
+            Class<?> aSuperClass = aClass.getSuperclass();
 
-        Class<?> aClass = oPage.getClass();
-        Class<?> aSuperClass = aClass.getSuperclass();
+            List<Field> fields = new ArrayList<>();
+            fields.addAll(Arrays.asList(aClass.getDeclaredFields()));
+            fields.addAll(Arrays.asList(aSuperClass.getDeclaredFields()));
 
-        List<Field> fields = new ArrayList<>();
-        fields.addAll(Arrays.asList(aClass.getDeclaredFields()));
-        fields.addAll(Arrays.asList(aSuperClass.getDeclaredFields()));
-
-        fields.forEach(field -> {
-            if(field.getName().equalsIgnoreCase(sObject)) {
-                try {
-                    element = (WebElement) field.get(oPage);
-                } catch (Exception e) {
-                    logger.error(e.getMessage());
+            fields.forEach(field -> {
+                if (field.getName().equalsIgnoreCase(sObject)) {
+                    try {
+                        element = (WebElement) field.get(oPage);
+                    } catch (Exception e) {
+                        logger.error(e.getMessage());
+                    }
                 }
-            }
-        });
-
+            });
+        }
         return element;
     }
 
@@ -165,11 +165,26 @@ public class Context {
     }
 
     public WebDriverWait getoWebDriverWait() {
+        if(oWebDriverWait == null) {
+            oWebDriverWait = new WebDriverWait(context.getoWebDriver(), context.getoConfig().getWebDriverTimeOut());
+        }
         return oWebDriverWait;
     }
 
     public DesiredCapabilities getoCapabilities() {
         return oCapabilities;
+    }
+
+    public void setoCapabilities(DesiredCapabilities oCapabilities) {
+        this.oCapabilities = oCapabilities;
+    }
+
+    public String getsCurrentPage() {
+        return sCurrentPage;
+    }
+
+    public void setsCurrentPage(String sCurrentPage) {
+        this.sCurrentPage = sCurrentPage;
     }
 
     public void setDriver(WebDriverType oWebDriverType, BrowserType oBrowserType, String sDeviceName) {
@@ -281,5 +296,9 @@ public class Context {
         } catch (Exception e) {
             logger.error("Encounter Error while reading the common Config file");
         }
+    }
+
+    public Boolean isAPI() {
+        return context.getoConfig().getApplicationType().equalsIgnoreCase("API") ? true : false;
     }
 }
