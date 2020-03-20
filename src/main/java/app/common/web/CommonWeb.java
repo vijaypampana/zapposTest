@@ -5,6 +5,7 @@ import app.common.Context;
 import app.common.Transform.TransformToWebElement;
 import cucumber.api.Transform;
 import cucumber.api.java.en.Given;
+import cucumber.api.java8.Tr;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
@@ -47,11 +48,18 @@ public class CommonWeb {
         context.setsCurrentPage(sScreen.replaceAll(" ", ""));
         try {
             context.getoWebDriverWait().until(ExpectedConditions.visibilityOf(context.findElement("waitElement")));
-        } catch (StaleElementReferenceException e) {
+        } catch (StaleElementReferenceException | NullPointerException e) {
+            //This is very important
             PageFactory.initElements(context.getoWebDriver(), context.getPageInstance(context.getsCurrentPage()));
             locateWaitElement(sScreen);
         }
     }
+
+    @Given("^I enter \"(.*)\" as \"(.*)\"$")
+    public void sendKeys(@Transform(TransformToWebElement.class) WebElement element, String value) {
+        element.sendKeys(value);
+    }
+
 
     private Context context;
 

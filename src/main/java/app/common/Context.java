@@ -72,6 +72,7 @@ public class Context {
 
     //This method will take the current Page and String webElement and return the webElement if found
     public WebElement findElement(String sCPage, String sWebElement) {
+        sWebElement = sWebElement.replaceAll(" ", "");
         WebElement element = searchElement(getPageInstance(sCPage), sWebElement);
         if(element == null) {
             logger.error(sWebElement + " is not found in the pageFactory");
@@ -123,6 +124,7 @@ public class Context {
                         element = (WebElement) field.get(oPage);
                     } catch (Exception e) {
                         logger.error(e.getMessage());
+                        System.out.println(e.getMessage());
                     }
                 }
             });
