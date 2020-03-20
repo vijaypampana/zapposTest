@@ -1,0 +1,7 @@
+2020-03-20 11:31:15 INFO  Context:291 - Started Reading CommonConfig.yaml
+2020-03-20 11:31:17 DEBUG Preferences:118 - Preference chrome=80 (valid until 2020-03-21 09:06:52)
+2020-03-20 11:31:17 DEBUG Preferences:118 - Preference chrome80=80.0.3987.106 (valid until 2020-03-21 09:06:52)
+2020-03-20 11:31:17 INFO  WebDriverManager:615 - Using chromedriver 80.0.3987.106 (since Google Chrome 80 is installed in your machine)
+2020-03-20 11:31:17 DEBUG WebDriverManager:564 - Driver chromedriver 80.0.3987.106 found in cache
+2020-03-20 11:31:17 INFO  WebDriverManager:1113 - Exporting webdriver.chrome.driver as C:\Users\vijay\.m2\repository\webdriver\chromedriver\win32\80.0.3987.106\chromedriver.exe
+2020-03-20 11:31:33 ERROR Context:78 - waitElement is not found in the pageFactory
