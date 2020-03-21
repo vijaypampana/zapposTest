@@ -6,10 +6,12 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import cucumber.api.java.en.Given;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import io.restassured.mapper.ObjectMapperDeserializationContext;
 import io.restassured.mapper.ObjectMapperSerializationContext;
 import org.apache.commons.lang3.StringUtils;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -48,6 +50,7 @@ public class Context {
     private DesiredCapabilities oCapabilities = new DesiredCapabilities();
 
     private String sCurrentPage = "";
+    private JavascriptExecutor js;
 
     //These two fields are defined here as we cannot use local variables in Lambda functions
     private String sReturn;
@@ -189,6 +192,14 @@ public class Context {
         this.sCurrentPage = sCurrentPage;
     }
 
+    public JavascriptExecutor getJs() {
+        return js;
+    }
+
+    public void setJs(JavascriptExecutor js) {
+        this.js = js;
+    }
+
     public void setDriver(WebDriverType oWebDriverType, BrowserType oBrowserType, String sDeviceName) {
         switch (oWebDriverType) {
             case ZALENIUM:
@@ -227,6 +238,7 @@ public class Context {
                 oWebDriver = new EdgeDriver();
                 break;
         }
+        js = (JavascriptExecutor) oWebDriver;
         oWebDriver.manage().window().maximize();
     }
 
@@ -303,5 +315,14 @@ public class Context {
 
     public Boolean isAPI() {
         return context.getoConfig().getApplicationType().equalsIgnoreCase("API") ? true : false;
+    }
+
+    @Given("^I wait for (\\d+)$")
+    public void wait_Thread(Integer sec) {
+        try {
+            Thread.sleep(sec);
+        } catch (Exception e) {
+            logger.info(e.getMessage());
+        }
     }
 }

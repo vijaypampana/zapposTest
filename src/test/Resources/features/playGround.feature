@@ -9,8 +9,14 @@ Feature: This is a test feature to test the functionalities included
     Then I click on "searchBar"
     Then I enter "search Bar" as "<searchValue>"
     Then I click on "submitButton"
+    Then I wait until the visibility of "mens Size"
+    Then I click on "mens Size"
+    Then I select shoe size as "<size>"
+    Then I scroll down until the visibility of "color Selection"
+    Then I scroll up until the visibility of "search Bar"
+
 
 
     Examples:
-      | searchValue              |
-      | Nike Air Zoom Pegasus 36 |
+      | searchValue              | size |
+      | Nike Air Zoom Pegasus 36 | "10"   |

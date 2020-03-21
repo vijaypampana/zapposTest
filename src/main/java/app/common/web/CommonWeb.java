@@ -60,6 +60,15 @@ public class CommonWeb {
         element.sendKeys(value);
     }
 
+    @Given("^I scroll (down|up) until the visibility of \"(.*)\"$")
+    public void scroll_for_visibility(String direction, @Transform(TransformToWebElement.class) WebElement element) {
+        context.getJs().executeScript("arguments[0].scrollIntoView(true)", element);
+    }
+
+    @Given("^I wait until the visibility of \"(.*)\"$")
+    public void wait_visibility(@Transform(TransformToWebElement.class) WebElement element) {
+        context.getoWebDriverWait().until(ExpectedConditions.visibilityOf(element));
+    }
 
     private Context context;
 
