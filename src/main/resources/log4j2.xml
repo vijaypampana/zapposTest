@@ -19,8 +19,8 @@
             </PatternLayout>
             <Policies>
                 <OnStartupTriggeringPolicy />
-                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
-                <SizeBasedTriggeringPolicy size="10"/>
+                <SizeBasedTriggeringPolicy size="10MB"/>
+                <TimeBasedTriggeringPolicy />
             </Policies>
             <DefaultRolloverStrategy max="10"/>
         </RollingFile>
@@ -30,7 +30,7 @@
               to="vijaypampana@gmail.com"
               smtpHost="smtp.gmail.com"
               smtpPort="465"
-              smtpUsername="vijaypampana@gmail.com"
+              smtpUsername="test@gmail.com"
               smtpPassword="testtest"
               smtpProtocol="smtps"
               smtpDebug="true"

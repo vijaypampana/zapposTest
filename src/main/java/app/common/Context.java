@@ -1,11 +1,13 @@
 package app.common;
 
+import app.common.Transform.TransformToWebElement;
 import app.common.enumType.BrowserType;
 import app.common.enumType.WebDriverType;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import cucumber.api.Transform;
 import cucumber.api.java.en.Given;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import io.restassured.mapper.ObjectMapperDeserializationContext;
@@ -26,6 +28,8 @@ import org.openqa.selenium.opera.OperaDriver;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.safari.SafariDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -317,6 +321,10 @@ public class Context {
         return context.getoConfig().getApplicationType().equalsIgnoreCase("API") ? true : false;
     }
 
+    public void wait_for_page_load() {
+        context.getoWebDriverWait().until(oWebDriver -> context.getJs().executeScript("return (document.readyState === 'complete' || document.readyState === 'interactive')"));
+    }
+
     @Given("^I wait for (\\d+)$")
     public void wait_Thread(Integer sec) {
         try {
@@ -324,5 +332,24 @@ public class Context {
         } catch (Exception e) {
             logger.info(e.getMessage());
         }
+    }
+
+    @Given("^I select \"(.*)\" as \"(.*)\"$")
+    public void select_visible_text(@Transform(TransformToWebElement.class) WebElement element, String value) {
+        (new Select(element)).selectByVisibleText(value);
+    }
+
+    public void wait_for_element_visible(WebElement element) {
+        context.getoWebDriverWait().until(ExpectedConditions.visibilityOf(element));
+    }
+
+    public void scroll_to_visible(WebElement element) {
+        //context.wait_for_element_visible(element);
+        try {
+            Thread.sleep(1000);
+        } catch (Exception ignored) {
+
+        }
+        context.getJs().executeScript("arguments[0].scrollIntoView(true)", element);
     }
 }

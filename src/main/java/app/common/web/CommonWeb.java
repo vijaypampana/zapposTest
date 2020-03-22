@@ -2,6 +2,7 @@ package app.common.web;
 
 import app.common.CommonConfig;
 import app.common.Context;
+import app.common.Transform.TransformToAssert;
 import app.common.Transform.TransformToWebElement;
 import cucumber.api.Transform;
 import cucumber.api.java.en.Given;
@@ -10,6 +11,8 @@ import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.testng.Assert;
+import org.testng.annotations.Optional;
 
 public class CommonWeb {
 
@@ -35,7 +38,8 @@ public class CommonWeb {
 
     @Given("^I click on \"(.*)\"$")
     public void clickOn(@Transform(TransformToWebElement.class) WebElement element) {
-        element.click();
+        //element.click();          //Seeing failures sometimes randomly
+        context.getJs().executeScript("arguments[0].click();", element);
     }
 
     @Given("^I get the webpage \"(.*)\"$")
@@ -46,6 +50,7 @@ public class CommonWeb {
     @Given("^I wait for \"(.*)\" page to load$")
     public void locateWaitElement(String sScreen) {
         context.setsCurrentPage(sScreen.replaceAll(" ", ""));
+        context.wait_for_page_load();
         try {
             context.getoWebDriverWait().until(ExpectedConditions.visibilityOf(context.findElement("waitElement")));
         } catch (StaleElementReferenceException | NullPointerException e) {
@@ -60,14 +65,29 @@ public class CommonWeb {
         element.sendKeys(value);
     }
 
-    @Given("^I scroll (down|up) until the visibility of \"(.*)\"$")
-    public void scroll_for_visibility(String direction, @Transform(TransformToWebElement.class) WebElement element) {
-        context.getJs().executeScript("arguments[0].scrollIntoView(true)", element);
+    @Given("^I scroll (?:down|up) until the visibility of \"(.*)\"$")
+    public void scroll_for_visibility(@Transform(TransformToWebElement.class) WebElement element) {
+        context.wait_for_page_load();
+        context.scroll_to_visible(element);
     }
 
     @Given("^I wait until the visibility of \"(.*)\"$")
     public void wait_visibility(@Transform(TransformToWebElement.class) WebElement element) {
+        context.wait_for_page_load();
         context.getoWebDriverWait().until(ExpectedConditions.visibilityOf(element));
+    }
+
+    @Given("^I (verify|assert) \"(.*)\" is displayed as \"(.*)\"$")
+    public void verify_object_label(@Transform(TransformToAssert.class) Boolean bAssert, @Transform(TransformToWebElement.class) WebElement element, String value) {
+        try {
+            Assert.assertEquals(element.getText(), value == null ? "" : value);
+        } catch (AssertionError e) {
+            if(bAssert) {
+                throw e;
+            } else {
+                //TBD
+            }
+        }
     }
 
     private Context context;
