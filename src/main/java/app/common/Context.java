@@ -14,6 +14,7 @@ import io.restassured.mapper.ObjectMapperDeserializationContext;
 import io.restassured.mapper.ObjectMapperSerializationContext;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -275,6 +276,7 @@ public class Context {
             options.addArguments("--start-maximized");
             options.addArguments("disable-infobars");
             options.setExperimentalOption("useAutomationExtension", false);
+            options.setPageLoadStrategy(PageLoadStrategy.EAGER);        //This was added to remove the Severe error logging for page wait in V80 [SEVERE]: Timed out receiving message from renderer: 0.100
             options.setCapability(CapabilityType.ACCEPT_INSECURE_CERTS, true);
             options.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
         } else {
@@ -336,6 +338,8 @@ public class Context {
 
     @Given("^I select \"(.*)\" as \"(.*)\"$")
     public void select_visible_text(@Transform(TransformToWebElement.class) WebElement element, String value) {
+        context.wait_for_page_load();
+        context.wait_for_element_visible(element);
         (new Select(element)).selectByVisibleText(value);
     }
 
@@ -345,11 +349,11 @@ public class Context {
 
     public void scroll_to_visible(WebElement element) {
         //context.wait_for_element_visible(element);
-        try {
-            Thread.sleep(1000);
-        } catch (Exception ignored) {
-
-        }
+//        try {
+//            Thread.sleep(1000);
+//        } catch (Exception ignored) {
+//
+//        }
         context.getJs().executeScript("arguments[0].scrollIntoView(true)", element);
     }
 }

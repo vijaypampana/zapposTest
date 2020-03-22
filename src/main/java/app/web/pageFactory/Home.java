@@ -43,18 +43,25 @@ public class Home {
     public void colorSelection(DataTable table) {
         List<List<String>> values = table.raw();
         values.forEach( val -> {
-            oWebDriver.findElement(By.xpath("//span[text()='"+ val.get(0)+"']")).click();
+            WebElement element = oWebDriver.findElement(By.xpath("//span[text()='"+ val.get(0)+"']"));
+            context.scroll_to_visible(element);
+            element.click();
             context.wait_for_page_load();
         });
     }
 
     @Given("^I click (first|last) result element$")
     public void select_result(String str) {
-        List<WebElement> listEle = context.searchElements(context.getPageInstance("Home"), "resultsSet");
-        if(str.equalsIgnoreCase("first")) {
-            listEle.get(0).click();
+        context.wait_for_page_load();
+        List<WebElement> listEle = oWebDriver.findElements(By.cssSelector("div .ch"));
+        if(listEle.size() == 0) {
+            select_result(str);
         } else {
-            listEle.get(listEle.size()).click();
+            if (str.equalsIgnoreCase("first")) {
+                listEle.get(0).click();
+            } else {
+                listEle.get(listEle.size()).click();
+            }
         }
         context.wait_for_page_load();
     }

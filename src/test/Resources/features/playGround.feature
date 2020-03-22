@@ -9,6 +9,7 @@ Feature: This is a test feature to test the functionalities included
     Then I click on "searchBar"
     Then I enter "search Bar" as "<searchValue>"
     Then I click on "submitButton"
+    Then I handle subWindow
     Then I wait until the visibility of "mens Size"
     Then I click on "mens Size"
     Then I select shoe size as "<size>"
@@ -20,18 +21,20 @@ Feature: This is a test feature to test the functionalities included
     Then I scroll up until the visibility of "search Bar"
     Then I click first result element
     Then I wait for "Result.Home" page to load
+    Then I handle subWindow
     Then I select "color Select" as "<colorSelect>"
     Then I select "size Select" as "<sizeSelect>"
     Then I select "width Select" as "<widthSelect>"
+    Then I scroll down until the visibility of "addToCart"
     Then I click on "addToCart"
-    Then I scroll down until the visibility of "checkOut"
+    Then I wait until the visibility of "checkOut"
     Then I click on "view Cart Link"
     Then I wait for "Result.Cart" page to load
-    Then I verify "color" is displayed as "<colorSelect>"
+    Then I verify "color" is displayed as "<expectedColor>"
     Then I verify "size" is displayed as "<sizeSelect>"
     Then I verify "width" is displayed as "<widthSelect>"
 
 
     Examples:
-      | searchValue              | size | colorSelect              | sizeSelect | widthSelect |
-      | Nike Air Zoom Pegasus 36 | "10" | Black/White/Thunder Grey | 10         | EE - Wide   |
+      | searchValue              | size | colorSelect              | sizeSelect | widthSelect | expectedColor |
+      | Nike Air Zoom Pegasus 36 | "10" | Black/White/Thunder Grey | 10         | EE - Wide   | colorSelect   |

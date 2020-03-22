@@ -105,6 +105,7 @@ public class DevRunner {
         options.addArguments("disable-extensions");
         options.addArguments("--start-maximized");
         options.addArguments("disable-infobars");
+        options.setPageLoadStrategy(PageLoadStrategy.EAGER);
         options.setCapability(CapabilityType.ACCEPT_INSECURE_CERTS, true);
         options.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
         return options;

@@ -9,6 +9,7 @@ import cucumber.api.java.en.Given;
 import cucumber.api.java8.Tr;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
@@ -39,7 +40,10 @@ public class CommonWeb {
     @Given("^I click on \"(.*)\"$")
     public void clickOn(@Transform(TransformToWebElement.class) WebElement element) {
         //element.click();          //Seeing failures sometimes randomly
-        context.getJs().executeScript("arguments[0].click();", element);
+        //context.getJs().executeScript("arguments[0].click();", element);
+        Actions builder = new Actions(context.getoWebDriver());
+        builder.moveToElement(element).click(element);
+        builder.perform();
     }
 
     @Given("^I get the webpage \"(.*)\"$")
