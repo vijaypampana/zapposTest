@@ -3,6 +3,9 @@ package app.reports;
 import app.common.Context;
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.GherkinKeyword;
+import com.aventstack.extentreports.markuputils.ExtentColor;
+import com.aventstack.extentreports.markuputils.MarkupHelper;
 import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
 import com.aventstack.extentreports.reporter.configuration.Theme;
 import cucumber.api.Result;
@@ -40,7 +43,6 @@ public class ExtentFormatter implements ReportFormatter {
         htmlReporter.config().setTheme(Theme.DARK);
 
         extentReports.attachReporter(htmlReporter);
-
     }
 
     public void setSystemInfo(String sKey, String value) {
@@ -56,17 +58,27 @@ public class ExtentFormatter implements ReportFormatter {
 
     @Override
     public void addFeature(String sKeyword, String sName, String sDescription, List<String> args) {
-
+        try {
+            extentFeature = extentReports.createTest(new GherkinKeyword(sKeyword), StringUtils.isEmpty(sName) ? sKeyword : sName);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void startTest(String sKeyword, String sName, String sDescription, List<String> oCategory) {
-
+        sKeyword = sKeyword.equalsIgnoreCase("Scenario Outline") ? "Scenario" : sKeyword;
+        try {
+            extentScenario = extentFeature.createNode(new GherkinKeyword(sKeyword), StringUtils.isEmpty(sName) ? sKeyword : sName);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        oCategory.forEach( cat -> extentScenario.assignCategory(cat));
     }
 
     @Override
     public void endTest(Long duration, Result.Type result, String sErrorMessage) {
-
+        //Not applicable for here
     }
 
     @Override
@@ -126,87 +138,115 @@ public class ExtentFormatter implements ReportFormatter {
 
     @Override
     public void startStep(int stepNumber, String sKeyword, String sStepDefinition, String argument) {
-
+        startStep(stepNumber, sKeyword, sStepDefinition);
+        stepInfo(argument);
     }
 
     @Override
     public void startStep(int stepNumber, String sKeyword, String sStepDefinition, PickleTable oTable) {
-
+        startStep(stepNumber, sKeyword, sStepDefinition);
+        stepTable(oTable);
     }
 
     @Override
     public void startStep(int stepNumber, String sKeyword, String sStepDefinition) {
-
+        try {
+            extentStep = extentScenario.createNode(new GherkinKeyword(sKeyword), StringUtils.isEmpty(sStepDefinition) ? sKeyword : sStepDefinition);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void endStep(Long Duration, Result.Type result, String sErrorMessage) {
-
+        switch (result) {
+            case PASSED:
+                if(!context.getReports().getReportMeta().isbStepFailure()) {
+                    stepPass(result.name());
+                }
+                break;
+            case FAILED:
+                stepFail(sErrorMessage);
+                break;
+            case SKIPPED:
+                stepSkip(result.name());
+                break;
+            case PENDING:
+            case AMBIGUOUS:
+            case UNDEFINED:
+                stepError(StringUtils.isEmpty(sErrorMessage) ? result.name() : sErrorMessage);
+                break;
+        }
     }
 
     @Override
     public void stepPass(String sReportText) {
-
+        extentStep.pass(sReportText);
     }
 
     @Override
     public void stepFail(String sReportText) {
-
+        extentStep.fail(sReportText);
+        stepScreenshot();
     }
 
     @Override
     public void stepFatal(String sReportText) {
-
+        extentStep.fatal(sReportText);
+        stepScreenshot();
     }
 
     @Override
     public void stepError(String sReportText) {
-
+        extentStep.fatal(sReportText);
+        stepScreenshot();
     }
 
     @Override
     public void stepWarning(String sReportText) {
-
+        extentStep.warning(sReportText);
     }
 
     @Override
     public void stepInfo(String sReportText) {
-
+        extentStep.info(sReportText);
     }
 
     @Override
     public void stepDebug(String sReportText) {
-
+        //Not Applicable for here
     }
 
     @Override
     public void stepSkip(String sReportText) {
-
+        extentStep.skip(sReportText);
     }
 
     @Override
     public void stepUnknown(String sReportText) {
-
+        //Not Applicable for here
     }
 
     @Override
     public void stepException(String sReportText) {
-
+        extentStep.fatal(sReportText);
+        stepScreenshot();
     }
 
     @Override
     public void stepException(Exception e) {
-
+        extentStep.fatal(e);
+        stepScreenshot();
     }
 
     @Override
     public void stepCode(String sReportText) {
-
+        extentStep.info(MarkupHelper.createCodeBlock(sReportText));
     }
 
     @Override
     public void stepLabel(String sReportText) {
-
+        extentStep.info(MarkupHelper.createLabel(sReportText, ExtentColor.PURPLE));
     }
 
     //This step will capture the screen when a UI Step fails
@@ -225,7 +265,7 @@ public class ExtentFormatter implements ReportFormatter {
 
     @Override
     public void stepTable(PickleTable oTable) {
-
+        extentStep.info(context.getReports().getReportMeta().getMarkUp(oTable));
     }
 
 }

@@ -1,5 +1,9 @@
 package app.reports;
 
+import com.aventstack.extentreports.markuputils.Markup;
+import com.aventstack.extentreports.markuputils.MarkupHelper;
+import gherkin.pickles.PickleTable;
+
 import java.util.List;
 
 public class ReportMeta {
@@ -15,11 +19,14 @@ public class ReportMeta {
     private String currentFeatureFile;
     private boolean isNewFeatureFile;
 
-    private List<String> featureFlags;
+    private List<String> featureTags;
 
     private byte[] screenshot;
 
     private int currentStepNumber;
+
+    private String[][] markUpTable;
+    Integer iRow = 0, iColumn = 0;
 
     void initializeStep() {
         setCurrentStepNumber(0);
@@ -85,12 +92,12 @@ public class ReportMeta {
         isNewFeatureFile = newFeatureFile;
     }
 
-    public List<String> getFeatureFlags() {
-        return featureFlags;
+    public List<String> getFeatureTgs() {
+        return featureTags;
     }
 
-    public void setFeatureFlags(List<String> featureFlags) {
-        this.featureFlags = featureFlags;
+    public void setFeatureTags(List<String> featureTags) {
+        this.featureTags = featureTags;
     }
 
     public byte[] getScreenshot() {
@@ -107,5 +114,31 @@ public class ReportMeta {
 
     public void setCurrentStepNumber(int currentStepNumber) {
         this.currentStepNumber = currentStepNumber;
+    }
+
+    //get MarkUp Table from a Pickle Table
+    public Markup getMarkUp(PickleTable oTable) {
+        iRow = 0;
+        iColumn = 0;
+        //We are not initializing markup Table here as we dont know the column size. Also a instance variable is created so that we can modify its value in forEach loop
+        markUpTable = null;
+        oTable.getRows().forEach( row -> {
+            row.getCells().forEach( cell -> {
+                if (markUpTable == null) {
+                    markUpTable = new String[oTable.getRows().size()][row.getCells().size()];
+                }
+                markUpTable[iRow][iColumn] = cell.getValue();
+                iColumn++;
+            });
+            iRow++;
+            iColumn = 0;
+        });
+        return MarkupHelper.createTable(markUpTable);
+    }
+
+    //Very specific to ReportPortal
+    public String buildMultiLineArgument(PickleTable oTable) {
+        //TBD
+        return null;
     }
 }
