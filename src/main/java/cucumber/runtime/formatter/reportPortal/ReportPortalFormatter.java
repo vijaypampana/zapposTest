@@ -1,6 +1,6 @@
-package app.reports.reportPortal;
+package cucumber.runtime.formatter.reportPortal;
 
-import app.reports.ReportFormatter;
+import cucumber.runtime.formatter.ReportFormatter;
 import cucumber.api.Result;
 import gherkin.pickles.PickleTable;
 

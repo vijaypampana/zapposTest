@@ -1,4 +1,4 @@
-package app.reports;
+package cucumber.runtime.formatter;
 
 import app.common.Context;
 import cucumber.api.Result;

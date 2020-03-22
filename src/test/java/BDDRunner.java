@@ -7,7 +7,7 @@ import org.testng.annotations.BeforeClass;
 @CucumberOptions(
         glue = {"app"},
         features = "src/test/Resources/features",
-        plugin = {},
+        plugin = {"cucumber.runtime.formatter.CustomFormatter:Extent"},
         tags = {"@zappos"}
 )
 public class BDDRunner extends AbstractTestNGCucumberTests {

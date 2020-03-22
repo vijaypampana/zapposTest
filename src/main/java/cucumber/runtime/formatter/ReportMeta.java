@@ -1,4 +1,4 @@
-package app.reports;
+package cucumber.runtime.formatter;
 
 import com.aventstack.extentreports.markuputils.Markup;
 import com.aventstack.extentreports.markuputils.MarkupHelper;

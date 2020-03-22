@@ -1,7 +1,6 @@
-package app.reports;
+package cucumber.runtime.formatter;
 
-import app.reports.reportPortal.ReportPortalFormatter;
-import org.apache.logging.log4j.core.layout.PatternSelector;
+import cucumber.runtime.formatter.reportPortal.ReportPortalFormatter;
 
 import java.util.ArrayList;
 import java.util.List;

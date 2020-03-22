@@ -1,4 +1,4 @@
-package app.reports;
+package cucumber.runtime.formatter;
 
 import cucumber.api.Result;
 import gherkin.pickles.PickleTable;

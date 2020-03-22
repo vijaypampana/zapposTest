@@ -3,7 +3,7 @@ package app.common;
 import app.common.Transform.TransformToWebElement;
 import app.common.enumType.BrowserType;
 import app.common.enumType.WebDriverType;
-import app.reports.ReportDriver;
+import cucumber.runtime.formatter.ReportDriver;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,8 +11,6 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import cucumber.api.Transform;
 import cucumber.api.java.en.Given;
 import io.github.bonigarcia.wdm.WebDriverManager;
-import io.restassured.mapper.ObjectMapperDeserializationContext;
-import io.restassured.mapper.ObjectMapperSerializationContext;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.PageLoadStrategy;
@@ -332,7 +330,7 @@ public class Context {
 
     public ReportDriver getReports(String type) {
         setReportDriver(type);
-        return reports;
+        return getReports();
     }
 
     public ReportDriver getReports() {
