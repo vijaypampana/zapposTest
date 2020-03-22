@@ -338,8 +338,8 @@ public class Context {
 
     @Given("^I select \"(.*)\" as \"(.*)\"$")
     public void select_visible_text(@Transform(TransformToWebElement.class) WebElement element, String value) {
-        context.wait_for_page_load();
-        context.wait_for_element_visible(element);
+        //context.wait_for_page_load();
+        //context.wait_for_element_visible(element);
         (new Select(element)).selectByVisibleText(value);
     }
 
