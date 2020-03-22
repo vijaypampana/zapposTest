@@ -3,6 +3,7 @@ package app.common;
 import app.common.Transform.TransformToWebElement;
 import app.common.enumType.BrowserType;
 import app.common.enumType.WebDriverType;
+import app.reports.ReportDriver;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -61,6 +62,8 @@ public class Context {
     private String sReturn;
     private WebElement element;
     private List<WebElement> elements;
+
+    private ReportDriver reports;
 
     public Context() {
     }
@@ -327,6 +330,17 @@ public class Context {
         context.getoWebDriverWait().until(oWebDriver -> context.getJs().executeScript("return (document.readyState === 'complete' || document.readyState === 'interactive')"));
     }
 
+    public ReportDriver getReports(String type) {
+        setReportDriver(type);
+        return reports;
+    }
+
+    public void setReportDriver(String type) {
+        if(reports == null) {
+            reports = new ReportDriver(type);
+            reports.initialize();
+        }
+    }
     @Given("^I wait for (\\d+)$")
     public void wait_Thread(Integer sec) {
         try {
