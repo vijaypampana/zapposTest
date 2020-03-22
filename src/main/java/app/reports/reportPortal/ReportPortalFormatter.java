@@ -106,7 +106,7 @@ public class ReportPortalFormatter implements ReportFormatter {
     }
 
     @Override
-    public void stopStep(Long Duration, Result.Type result, String sErrorMessage) {
+    public void endStep(Long Duration, Result.Type result, String sErrorMessage) {
 
     }
 

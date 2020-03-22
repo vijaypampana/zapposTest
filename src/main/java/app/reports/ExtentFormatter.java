@@ -1,13 +1,18 @@
 package app.reports;
 
+import app.common.Context;
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
+import com.aventstack.extentreports.reporter.configuration.Theme;
 import cucumber.api.Result;
 import gherkin.pickles.PickleTable;
 import org.apache.commons.lang3.StringUtils;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 
 import java.io.File;
+import java.util.Base64;
 import java.util.List;
 
 public class ExtentFormatter implements ReportFormatter {
@@ -17,18 +22,24 @@ public class ExtentFormatter implements ReportFormatter {
     private ExtentTest extentFeature;
     private ExtentTest extentScenario;
     private ExtentTest extentStep;
+    public Context context;
 
     @Override
     public void initialize() {
+        context = Context.getInstance();
         extentReports = new ExtentReports();
 
         //System.info
         setSystemInfo("User", System.getProperty("user.name"));
 
-        File oFile = new File("TBD");
+        File oFile = new File(context.getReports().getReportMeta().getReportName());
 
         htmlReporter = new ExtentHtmlReporter(oFile);
+        htmlReporter.config().setDocumentTitle(context.getReports().getReportMeta().getReportTitle());
+        htmlReporter.config().setReportName(context.getReports().getReportMeta().getReportTitle());
+        htmlReporter.config().setTheme(Theme.DARK);
 
+        extentReports.attachReporter(htmlReporter);
 
     }
 
@@ -40,7 +51,7 @@ public class ExtentFormatter implements ReportFormatter {
 
     @Override
     public void endExecution() {
-
+        extentReports.flush();
     }
 
     @Override
@@ -60,57 +71,57 @@ public class ExtentFormatter implements ReportFormatter {
 
     @Override
     public void testPass(String sReportText) {
-
+        //Not applicable for here
     }
 
     @Override
     public void testFail(String sReportText) {
-
+        //Not applicable for here
     }
 
     @Override
     public void testFatal(String sReportText) {
-
+        //Not applicable for here
     }
 
     @Override
     public void testError(String sReportText) {
-
+        //Not applicable for here
     }
 
     @Override
     public void testWarning(String sReportText) {
-
+        //Not applicable for here
     }
 
     @Override
     public void testInfo(String sReportText) {
-
+        //Not applicable for here
     }
 
     @Override
     public void testDebug(String sReportText) {
-
+        //Not applicable for here
     }
 
     @Override
     public void testSkip(String sReportText) {
-
+        //Not applicable for here
     }
 
     @Override
     public void testUnknown(String sReportText) {
-
+        //Not applicable for here
     }
 
     @Override
     public void testException(String sReportText) {
-
+        //Not applicable for here
     }
 
     @Override
     public void testException(Exception e) {
-
+        //Not applicable for here
     }
 
     @Override
@@ -129,7 +140,7 @@ public class ExtentFormatter implements ReportFormatter {
     }
 
     @Override
-    public void stopStep(Long Duration, Result.Type result, String sErrorMessage) {
+    public void endStep(Long Duration, Result.Type result, String sErrorMessage) {
 
     }
 
@@ -198,9 +209,18 @@ public class ExtentFormatter implements ReportFormatter {
 
     }
 
+    //This step will capture the screen when a UI Step fails
     @Override
     public void stepScreenshot() {
-
+        if(!context.isAPI()) {
+            try {
+                byte[] content = ((TakesScreenshot) context.getoWebDriver()).getScreenshotAs(OutputType.BYTES);
+                context.getReports().getReportMeta().setScreenshot(content);
+                extentStep.addScreenCaptureFromPath("data:image/gif;base64," + Base64.getEncoder().encodeToString(content));
+            } catch (Exception e) {
+                extentStep.fatal(e.getStackTrace().toString());
+            }
+        }
     }
 
     @Override

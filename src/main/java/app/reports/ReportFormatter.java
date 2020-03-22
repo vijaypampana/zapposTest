@@ -30,7 +30,7 @@ public interface ReportFormatter {
     void startStep(int stepNumber, String sKeyword, String sStepDefinition, String argument);
     void startStep(int stepNumber, String sKeyword, String sStepDefinition, PickleTable oTable);
     void startStep(int stepNumber, String sKeyword, String sStepDefinition);
-    void stopStep(Long Duration, Result.Type result, String sErrorMessage);
+    void endStep(Long Duration, Result.Type result, String sErrorMessage);
 
     void stepPass(String sReportText);
     void stepFail(String sReportText);

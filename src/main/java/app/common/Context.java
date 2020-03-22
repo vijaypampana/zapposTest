@@ -335,6 +335,10 @@ public class Context {
         return reports;
     }
 
+    public ReportDriver getReports() {
+        return reports;
+    }
+
     public void setReportDriver(String type) {
         if(reports == null) {
             reports = new ReportDriver(type);
