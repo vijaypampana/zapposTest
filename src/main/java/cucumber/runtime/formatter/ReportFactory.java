@@ -14,9 +14,9 @@ public class ReportFactory {
     }
 
     public ReportFactory(String type) {
-        if(type.equalsIgnoreCase("extent")) {
+        if(type.equalsIgnoreCase(ReportType.EXTENT)) {
             getExtentFormatter();
-        } else if(type.equalsIgnoreCase("reportportal")) {
+        } else if(type.equalsIgnoreCase(ReportType.REPORTPORTAL)) {
             getReportPortalFormatter();
         } else {
             getExtentFormatter();
