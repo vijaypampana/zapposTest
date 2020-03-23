@@ -15,7 +15,7 @@ public class BDDRunner extends AbstractTestNGCucumberTests {
 
     @BeforeClass(alwaysRun = true)
     public void setup() {
-
+        Context.getInstance().startDriver();
     }
 
     @AfterClass(alwaysRun = true)

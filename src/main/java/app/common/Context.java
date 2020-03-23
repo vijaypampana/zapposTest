@@ -66,6 +66,13 @@ public class Context {
     public Context() {
     }
 
+    public void startDriver() {
+        if(context.getoConfig() == null) {
+            context.setoConfig(new CommonConfig());
+            context.loadConfig();
+        }
+    }
+
     public static Context getInstance() {
         return context;
     }
@@ -372,4 +379,5 @@ public class Context {
 //        }
         context.getJs().executeScript("arguments[0].scrollIntoView(true)", element);
     }
+
 }

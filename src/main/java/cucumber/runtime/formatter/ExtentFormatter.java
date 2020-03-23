@@ -73,7 +73,7 @@ public class ExtentFormatter implements ReportFormatter {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        oCategory.forEach( cat -> extentScenario.assignCategory(cat));
+        oCategory.forEach( cat -> extentScenario.assignCategory(cat));      //extentScenario.test.Categories -> Tags will be added to this list
     }
 
     @Override

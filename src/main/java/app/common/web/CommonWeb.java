@@ -27,13 +27,15 @@ public class CommonWeb {
         if(context.getoWebDriver() != null) {
             context.closeDriver();
         }
-        switch (context.getoConfig().getWebDriverType()) {
-            case SELENIUMLOCAL:
-                context.startLocalDriver(context.getoConfig().getCapability().getBrowserName(), "");
-                break;
-            case ZALENIUM:
-                context.startRemoteDriver(context.getoConfig().getCapability().getBrowserName(), context.getoConfig().getCapability().getDeviceName());
-                break;
+        if(!context.isAPI()) {
+            switch (context.getoConfig().getWebDriverType()) {
+                case SELENIUMLOCAL:
+                    context.startLocalDriver(context.getoConfig().getCapability().getBrowserName(), "");
+                    break;
+                case ZALENIUM:
+                    context.startRemoteDriver(context.getoConfig().getCapability().getBrowserName(), context.getoConfig().getCapability().getDeviceName());
+                    break;
+            }
         }
     }
 
