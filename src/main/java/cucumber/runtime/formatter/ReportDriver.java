@@ -27,6 +27,7 @@ public class ReportDriver implements ReportFormatter {
 
     public String setLocalReportPath() {
         String sTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH_mm_ss"));
+        reportMeta.setReportTitle(context.isAPI() ? "API" : "UI");
         return getReporDirectoryName().concat(File.separator).concat(sTime+"__").concat(context.isAPI() ? "API.html" : "UI.html");
     }
 
