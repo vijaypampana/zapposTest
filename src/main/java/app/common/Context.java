@@ -39,7 +39,7 @@ import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-public class Context {
+public class Context extends APIContext {
 
     private static final Logger logger = LoggerFactory.getLogger(Context.class);
     public static final Context context = new Context();
@@ -380,4 +380,8 @@ public class Context {
         context.getJs().executeScript("arguments[0].scrollIntoView(true)", element);
     }
 
+    public String getData(String value) {
+        //TBD
+        return null;
+    }
 }
