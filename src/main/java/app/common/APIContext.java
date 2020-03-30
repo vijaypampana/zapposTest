@@ -11,7 +11,8 @@ import java.util.Map;
 
 public class APIContext {
 
-    private String sHost, sBasePath, sContentType, body;
+    private String sHost, sBasePath, sContentType;
+    private Object body;
     private Map<String, String> headers = new HashMap<>();
     private Map<String, String> params = new HashMap<>();
     private Map<String, String> formParams = new HashMap<>();
@@ -47,11 +48,11 @@ public class APIContext {
         this.sContentType = sContentType;
     }
 
-    public String getBody() {
+    public Object getBody() {
         return body;
     }
 
-    public void setBody(String body) {
+    public void setBody(Object body) {
         this.body = body;
     }
 

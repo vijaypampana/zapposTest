@@ -6,6 +6,11 @@ import app.common.Utils.DataUtils;
 import cucumber.api.DataTable;
 import cucumber.api.Transform;
 import cucumber.api.java.en.Given;
+import groovy.json.JsonBuilder;
+import groovy.json.JsonSlurper;
+import groovy.util.Eval;
+import groovy.xml.XmlSlurper;
+import groovy.xml.slurpersupport.GPathResult;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.testng.Assert;
@@ -13,6 +18,11 @@ import org.testng.Assert;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
 
 public class CommonSteps {
 
@@ -116,8 +126,44 @@ public class CommonSteps {
                 context.getReports().stepFail("_REFFILE is neither a json or XML");
             }
         } else {
+            Map<String, Object> mapReturn = new HashMap<>();
 
+            table.raw().forEach( row -> {
+                String sKey = row.get(0);
+                String sValue = row.get(1);
+
+                if(row.size() == 3) {
+                    mapReturn.put(sKey, JSONSteps.getJsonType(sValue, row.get(2)));
+                } else {
+                    switch (JSONSteps.getJsonNodeType(sValue)) {
+                        case NULL:
+                            mapReturn.put(sKey, null);
+                            break;
+                        case BOOLEAN:
+                            mapReturn.put(sKey, Boolean.valueOf(sValue));
+                            break;
+                        case NUMBER:
+                            try {
+                                mapReturn.put(sKey, Long.valueOf(sValue));
+                            } catch (NumberFormatException e) {
+                                mapReturn.put(sKey, Double.valueOf(sValue));
+                            }
+                            break;
+                        case STRING:
+                            mapReturn.put(sKey, String.valueOf(sValue));
+                            break;
+                        case ARRAY:
+                        case OBJECT:
+                            //TO DO
+                            break;
+                    }
+                }
+            });
+            sContentType = "application/json";
+            oBody = mapReturn;
         }
+        context.setsContentType(sContentType);
+        context.setBody(oBody);
     }
 
 
@@ -130,11 +176,63 @@ public class CommonSteps {
     }
 
     private String getModifiedJson(String resource, DataTable table) {
-        return null;
+        //Only _REFFILE file is provided, no modification details are provided
+        if(table.raw().size() == 1) {
+            return resource;
+        } else {
+            Boolean skip = true;
+            JsonBuilder builder = new JsonBuilder(new JsonSlurper().parseText(resource));
+
+            for (List<String> row : table.raw()) {
+                if(skip) {
+                    skip = false;
+                } else {
+                    String query = row.get(0);
+                    String value = context.getData(row.get(1));
+
+                    if(row.size() == 3) {
+                        Eval.xy(builder, JSONSteps.getJsonType(value, row.get(2)), "x.content." + query + " = y");
+                    } else {
+                        Eval.xy(builder, value, "x.content." + query + " = y");
+                    }
+                }
+            }
+            context.getReports().stepCode(builder.toString());
+            return builder.toString();
+        }
     }
 
     private String getModifiedXML(String resource, DataTable table) {
+        if(table.raw().size() == 1) {
+            return resource;
+        } else {
+            Boolean skip = true;
+            GPathResult builder = null;
+            try {
+                builder = new XmlSlurper().parseText(resource);
+                for (List<String> row : table.raw()) {
+                    String query = context.getData(row.get(0));
+                    String value = context.getData(row.get(1));
+                    if (skip) {
+                        skip = false;
+                    } else {
+                        Eval.x(builder, "x" + query.substring(query.indexOf(".")) + " = '" + value + "'");
+                    }
+                }
+            } catch (Exception e) {
+                context.getReports().stepFail(e.getMessage());
+            }
+        }
         return null;
+    }
+
+    @Given("^I validate response matches \"(.*)\" schema$")
+    public void validateJsonResponseSchema(String fileName) {
+        try {
+            context.getValidatableResponse().assertThat().body(matchesJsonSchemaInClasspath("api/" + fileName));
+        } catch (Exception e) {
+            context.getReports().stepFail(e.getMessage());
+        }
     }
 
     //This method will reset the API values
