@@ -30,7 +30,7 @@ public class Cart {
             this.context = Context.getInstance();
             this.oWebDriver = context.getoWebDriver();
             this.oWebDriverWait = context.getoWebDriverWait();
-            //PageFactory.initElements(oWebDriver, this);
+            PageFactory.initElements(oWebDriver, this);
         }
     }
 }

@@ -2,8 +2,10 @@ package app.web.pageFactory.Registration;
 
 import app.common.Context;
 import cucumber.api.java.en.Given;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
 
 public class Login {
 
@@ -26,9 +28,12 @@ public class Login {
 
 
     private Context context;
+    private WebDriver oDriver;
 
     public Login() {
         context = Context.getInstance();
+        oDriver = context.getoWebDriver();
+        PageFactory.initElements(oDriver, this);
     }
 
 }
