@@ -14,7 +14,7 @@
         <rest.assured.version>4.2.0</rest.assured.version>
         <selenium.version>3.141.59</selenium.version>
         <jackson.version>2.10.3</jackson.version>
-        <slf4j.version>2.8</slf4j.version>
+        <slf4j.version>2.13.3</slf4j.version>
     </properties>
 
     <dependencies>
